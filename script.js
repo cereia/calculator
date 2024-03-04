@@ -53,15 +53,19 @@ document.addEventListener('keydown', (e) => {
     ? display.textContent = e.key 
     : display.textContent += e.key;
   }
-})
+});
 
 //remove what's in display and resets it to 0
 const clear = document.querySelector('.clear');
-clear.addEventListener('click', () => display.textContent = 0);
+clear.addEventListener('click', () => {
+  display.textContent = 0
+  clearInputs();
+});
 
 document.addEventListener('keydown', (e) => {
   if(e.key == 'Backspace') display.textContent = 0;
-})
+  clearInputs();
+});
 
 //clicking on any of the operations saves what's in the display to num1
 //and saves the operation to operator variable
@@ -71,6 +75,51 @@ document.addEventListener('keydown', (e) => {
 //when = what's in display is saved to num2
 //operate function is called with num1, operator, and num2 
 //display is updated with calculated value
+
+function clearInputs() {
+  num1 = undefined;
+  operator = undefined;
+  num2 = undefined;
+  return num1, operator, num2;
+}
+
+const opBtns = document.querySelectorAll('.operation');
+opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
+  //if num1 is not defined, define it as what's in the display
+  //if operator is also not defined, define it as the operator btn's text content;
+
+  //using = is fine; works as intended
+  //chaining operators breaks 
+      //13 * 4 //expect 52
+      // / 2 //expect 52 / 2 ; get 522
+
+      //12 * 3 gets 36
+      // + 4 gets 364 and = does nothing
+  let intermedVal
+  console.log(num1, operator, num2, intermedVal);
+  
+  if(operator === undefined && opBtn.textContent !== '=') {
+    if(intermedVal) {
+      num1 = intermedVal;
+    } else {
+      num1 = display.textContent;
+    }
+    operator = opBtn.textContent;
+    //clear display to prep for num2
+    display.textContent = 0;
+    //if num1 and operator are defined, set num2 to what's in display
+  } else if(num1 && operator) {
+    num2 = display.textContent;
+    display.textContent = operate(num1, operator, num2);
+    intermedVal = operate(num1, operator, num2);
+    clearInputs();
+
+    //if num1 and op are already defined, and op is not =
+    //set num1 to what's in display
+    //set operator to btn's text content
+    //set display to 0
+  } 
+}));
 
 //if an operator was clicked instead of =, 
 //what's in display is saved to num2
