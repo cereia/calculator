@@ -25,12 +25,6 @@ function operate(n1, op, n2) {
   return operations[operator](num1, num2);
 }
 
-//check that num1, operator, and num2 are available outside operate
-function operateCheck() {
-  console.log(num1, operator, num2); 
-}
-
-
 
 //CALCULATOR DISPLAY 
 const display = document.querySelector('.display');
@@ -58,7 +52,7 @@ document.addEventListener('keydown', (e) => {
 //remove what's in display and resets it to 0
 const clear = document.querySelector('.clear');
 clear.addEventListener('click', () => {
-  display.textContent = 0
+  display.textContent = 0;
   clearInputs();
 });
 
@@ -67,15 +61,7 @@ document.addEventListener('keydown', (e) => {
   clearInputs();
 });
 
-//clicking on any of the operations saves what's in the display to num1
-//and saves the operation to operator variable
-//clears display to prepare for next number; 
-    //don't actually remove the previous number until a new number is clicked, 
-    //then set new textContent
-//when = what's in display is saved to num2
-//operate function is called with num1, operator, and num2 
-//display is updated with calculated value
-
+//helper function to clear user inputs
 function clearInputs() {
   num1 = undefined;
   operator = undefined;
@@ -87,44 +73,24 @@ const opBtns = document.querySelectorAll('.operation');
 opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
   //if num1 is not defined, define it as what's in the display
   //if operator is also not defined, define it as the operator btn's text content;
-
-  //using = is fine; works as intended
-  //chaining operators breaks 
-      //13 * 4 //expect 52
-      // / 2 //expect 52 / 2 ; get 522
-
-      //12 * 3 gets 36
-      // + 4 gets 364 and = does nothing
-  let intermedVal
-  console.log(num1, operator, num2, intermedVal);
   
-  if(operator === undefined && opBtn.textContent !== '=') {
-    if(intermedVal) {
-      num1 = intermedVal;
-    } else {
-      num1 = display.textContent;
-    }
+  if(operator === undefined) {
+    num1 = display.textContent;
     operator = opBtn.textContent;
     //clear display to prep for num2
     display.textContent = 0;
+    console.log(num1, operator, num2, operate(num1, operator, num2));
+
     //if num1 and operator are defined, set num2 to what's in display
-  } else if(num1 && operator) {
+  } else {
     num2 = display.textContent;
     display.textContent = operate(num1, operator, num2);
-    intermedVal = operate(num1, operator, num2);
+    console.log(num1, operator, num2, operate(num1, operator, num2));
     clearInputs();
-
-    //if num1 and op are already defined, and op is not =
-    //set num1 to what's in display
-    //set operator to btn's text content
-    //set display to 0
+    if(opBtn.textContent !== '=') {
+      num1 = display.textContent;
+      operator = opBtn.textContent;
+      display.textContent = 0;
+    }
   } 
 }));
-
-//if an operator was clicked instead of =, 
-//what's in display is saved to num2
-//operate is called
-//display is updated 
-//what's in display is passed/saved as num1 
-//operation button pressed is saved as operator
-//prepare for num2 by clearing textContent
