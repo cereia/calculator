@@ -6,7 +6,7 @@ const operations = {
   '+': (n1, n2) => n1 + n2,
   '-': (n1, n2) => n1 - n2,
   '*': (n1, n2) => n1 * n2,
-  '/': (n1, n2) => n2 == 0 ? 'Div by 0?!' : n1 / n2,
+  '/': (n1, n2) => n2 == 0 ? display.textContent = 'Div by 0?!' : n1 / n2,
 }
 
 //create variables for the 3 user inputs
@@ -86,7 +86,7 @@ clear.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if(e.key == 'Backspace') display.textContent = 0;
+  if(e.key == 'Backspace' || e.key == 'Delete') display.textContent = 0;
   clearInputs();
   checkSelected();
 });
@@ -113,3 +113,44 @@ opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
     }
   } 
 }));
+
+document.addEventListener('keydown', (e) => {
+  //add classlist to help with clearing display
+  let btns = [...opBtns];
+  for(let btn in btns) {
+    if(e.key === btns[btn].textContent) {
+      btns[btn].classList.add('selected');
+    }
+  }
+  
+  let keys = ['+', '-', '*', '/', '='];
+  if(keys.includes(e.key)){
+    if(e.key !== '=') {
+      //keeps resetting the operator when condition is !operator
+      //, so it never gets down to saving n2
+      //just saves and rewrites n1 and op again and again
+
+      //like this, it never runs operate, even with n1, op, and n2
+
+      console.log(e.key, 'e.key')
+      num1 = display.textContent;
+      console.log(operator, 'check op before set')
+      operator = e.key;
+      console.log(num1, 'n1,', operator, 'new op')
+
+      console.log(num1, operator, num2, operate(num1, operator, num2), '1')
+    } else {
+      num2 = display.textContent;
+      console.log(num2, 'n2')
+      console.log('got n2!')
+      display.textContent = operate(num1, operator, num2);
+      console.log(num1, operator, num2, operate(num1, operator, num2), '2')
+
+      clearInputs();
+      if(e.key !== '=') {
+        num1 = display.textContent;
+        operator = e.key;
+        }
+    }
+  }
+})
