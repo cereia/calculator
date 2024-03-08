@@ -33,15 +33,43 @@ display.textContent = 0;
 const numbers = document.querySelectorAll('.number');
 
 //EVENT LISTENERS
+
+//EVENT LISTENER HELPER FUNCTIONS
+//checks for selected class in the operator buttons
+const opBtns = document.querySelectorAll('.operation');
+function checkSelected() {
+  //turn a node list into a proper array to iterate
+  let btns = [...opBtns];
+  //for every button, check for the selected class and remove if found
+  for(let btn in btns) {
+    if(btns[btn].classList.contains('selected')) {
+      btns[btn].classList.remove('selected');
+      display.textContent = 0;
+    }
+  }
+}
+
+//helper function to clear user inputs
+function clearInputs() {
+  num1 = 0;
+  operator = '';
+  num2 = 0;
+  return num1, operator, num2;
+}
+
 //if display shows 0, clicking any number except 0 replaces 0 
-//if you keep clicking, the clicked number gets added onto the end of what's already there
+//if it's not 0, the clicked number gets added onto the end of what's already there
 numbers.forEach(num => num.addEventListener('click', () => {
+  checkSelected();
+
   return display.textContent == 0 
   ? display.textContent = num.textContent 
   : display.textContent += num.textContent;
 }));
 
 document.addEventListener('keydown', (e) => {
+  checkSelected();
+
   if(e.key.match(/\d/)) {
     return display.textContent == 0 
     ? display.textContent = e.key 
@@ -49,48 +77,39 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-//remove what's in display and resets it to 0
+//remove what's in display, all saved inputs, and any additional classes
 const clear = document.querySelector('.clear');
 clear.addEventListener('click', () => {
   display.textContent = 0;
   clearInputs();
+  checkSelected();
 });
 
 document.addEventListener('keydown', (e) => {
   if(e.key == 'Backspace') display.textContent = 0;
   clearInputs();
+  checkSelected();
 });
 
-//helper function to clear user inputs
-function clearInputs() {
-  num1 = undefined;
-  operator = undefined;
-  num2 = undefined;
-  return num1, operator, num2;
-}
-
-const opBtns = document.querySelectorAll('.operation');
+//add event listener to operator buttons, including =
 opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
-  //if num1 is not defined, define it as what's in the display
-  //if operator is also not defined, define it as the operator btn's text content;
-  
-  if(operator === undefined) {
+  //when a button is clicked, add selected class
+  opBtn.classList.add('selected');
+
+  //if operator is undefined, save what's in display to num1 and button's content to operator
+  if(!operator) {
     num1 = display.textContent;
     operator = opBtn.textContent;
-    //clear display to prep for num2
-    display.textContent = 0;
-    console.log(num1, operator, num2, operate(num1, operator, num2));
-
     //if num1 and operator are defined, set num2 to what's in display
   } else {
     num2 = display.textContent;
     display.textContent = operate(num1, operator, num2);
-    console.log(num1, operator, num2, operate(num1, operator, num2));
     clearInputs();
+
+    //if the button clicked isn't =, save what's in display to num1 and button to operator
     if(opBtn.textContent !== '=') {
       num1 = display.textContent;
       operator = opBtn.textContent;
-      display.textContent = 0;
     }
   } 
 }));
