@@ -51,9 +51,9 @@ function checkSelected() {
 
 //helper function to clear user inputs
 function clearInputs() {
-  num1 = 0;
-  operator = '';
-  num2 = 0;
+  num1 = undefined;
+  operator = undefined;
+  num2 = undefined;
   return num1, operator, num2;
 }
 
@@ -69,11 +69,12 @@ numbers.forEach(num => num.addEventListener('click', () => {
 
 document.addEventListener('keydown', (e) => {
   checkSelected();
-
-  if(e.key.match(/\d/)) {
-    return display.textContent == 0 
-    ? display.textContent = e.key 
-    : display.textContent += e.key;
+  for(let num in numbers) {
+    if(e.key === numbers[num].textContent) {
+      return display.textContent == 0 
+      ? display.textContent = numbers[num].textContent 
+      : display.textContent += numbers[num].textContent;
+    }
   }
 });
 
@@ -101,8 +102,14 @@ opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
     num1 = display.textContent;
     operator = opBtn.textContent;
     //if num1 and operator are defined, set num2 to what's in display
+    console.log(num1, operator, num2, operate(num1, operator, num2), '=> 1')
+
+    //when mixing keydown inputs for nums and clicking on operations, doesn't save n1 or op
+    //keeps rewriting n1 and op, never gets to else condition
   } else {
+    console.log('testing')
     num2 = display.textContent;
+    console.log(num1, operator, num2, operate(num1, operator, num2), '=> 2')
     display.textContent = operate(num1, operator, num2);
     clearInputs();
 
@@ -113,44 +120,3 @@ opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
     }
   } 
 }));
-
-document.addEventListener('keydown', (e) => {
-  //add classlist to help with clearing display
-  let btns = [...opBtns];
-  for(let btn in btns) {
-    if(e.key === btns[btn].textContent) {
-      btns[btn].classList.add('selected');
-    }
-  }
-  
-  let keys = ['+', '-', '*', '/', '='];
-  if(keys.includes(e.key)){
-    if(e.key !== '=') {
-      //keeps resetting the operator when condition is !operator
-      //, so it never gets down to saving n2
-      //just saves and rewrites n1 and op again and again
-
-      //like this, it never runs operate, even with n1, op, and n2
-
-      console.log(e.key, 'e.key')
-      num1 = display.textContent;
-      console.log(operator, 'check op before set')
-      operator = e.key;
-      console.log(num1, 'n1,', operator, 'new op')
-
-      console.log(num1, operator, num2, operate(num1, operator, num2), '1')
-    } else {
-      num2 = display.textContent;
-      console.log(num2, 'n2')
-      console.log('got n2!')
-      display.textContent = operate(num1, operator, num2);
-      console.log(num1, operator, num2, operate(num1, operator, num2), '2')
-
-      clearInputs();
-      if(e.key !== '=') {
-        num1 = display.textContent;
-        operator = e.key;
-        }
-    }
-  }
-})
