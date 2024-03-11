@@ -35,15 +35,16 @@ const numbers = document.querySelectorAll('.number');
 //EVENT LISTENERS
 
 //EVENT LISTENER HELPER FUNCTIONS
-//checks for selected class in the operator buttons
 const opBtns = document.querySelectorAll('.operation');
-function checkSelected() {
+
+//remove selected class from operation buttons
+function removeSelected() {
   //turn a node list into a proper array to iterate
-  let btns = [...opBtns];
+  let opBtnsArr = [...opBtns];
   //for every button, check for the selected class and remove if found
-  for(let btn in btns) {
-    if(btns[btn].classList.contains('selected')) {
-      btns[btn].classList.remove('selected');
+  for(let btn in opBtnsArr) {
+    if(opBtnsArr[btn].classList.contains('selected')) {
+      opBtnsArr[btn].classList.remove('selected');
       display.textContent = 0;
     }
   }
@@ -51,16 +52,16 @@ function checkSelected() {
 
 //helper function to clear user inputs
 function clearInputs() {
-  num1 = undefined;
-  operator = undefined;
-  num2 = undefined;
+  num1 = 0;
+  operator = '';
+  num2 = 0;
   return num1, operator, num2;
 }
 
 //if display shows 0, clicking any number except 0 replaces 0 
 //if it's not 0, the clicked number gets added onto the end of what's already there
 numbers.forEach(num => num.addEventListener('click', () => {
-  checkSelected();
+  removeSelected();
 
   return display.textContent == 0 
   ? display.textContent = num.textContent 
@@ -68,13 +69,12 @@ numbers.forEach(num => num.addEventListener('click', () => {
 }));
 
 document.addEventListener('keydown', (e) => {
-  checkSelected();
-  for(let num in numbers) {
-    if(e.key === numbers[num].textContent) {
-      return display.textContent == 0 
-      ? display.textContent = numbers[num].textContent 
-      : display.textContent += numbers[num].textContent;
-    }
+  removeSelected();
+
+  if(e.key.match(/^\d/)) {
+    return display.textContent == 0 
+    ? display.textContent = e.key 
+    : display.textContent += e.key;
   }
 });
 
@@ -83,40 +83,39 @@ const clear = document.querySelector('.clear');
 clear.addEventListener('click', () => {
   display.textContent = 0;
   clearInputs();
-  checkSelected();
+  removeSelected();
 });
 
 document.addEventListener('keydown', (e) => {
-  if(e.key == 'Backspace' || e.key == 'Delete') display.textContent = 0;
-  clearInputs();
-  checkSelected();
+  if(e.key == 'Backspace' || e.key == 'Delete') {
+    display.textContent = 0;
+    clearInputs();
+    removeSelected();
+  };  
 });
 
 //add event listener to operator buttons, including =
-opBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
+opBtns.forEach(btn => btn.addEventListener('click', () => {
   //when a button is clicked, add selected class
-  opBtn.classList.add('selected');
+  btn.classList.add('selected');
 
   //if operator is undefined, save what's in display to num1 and button's content to operator
-  if(!operator) {
+  if(btn.textContent !== '=' && !operator) {
     num1 = display.textContent;
-    operator = opBtn.textContent;
+    operator = btn.textContent;
     //if num1 and operator are defined, set num2 to what's in display
-    console.log(num1, operator, num2, operate(num1, operator, num2), '=> 1')
+    console.log(num1, operator, num2, 'n1, op, n2 => 1')
 
-    //when mixing keydown inputs for nums and clicking on operations, doesn't save n1 or op
-    //keeps rewriting n1 and op, never gets to else condition
   } else {
-    console.log('testing')
     num2 = display.textContent;
-    console.log(num1, operator, num2, operate(num1, operator, num2), '=> 2')
+    console.log(num1, operator, num2, 'n1, op, n2 => 2')
     display.textContent = operate(num1, operator, num2);
     clearInputs();
 
     //if the button clicked isn't =, save what's in display to num1 and button to operator
-    if(opBtn.textContent !== '=') {
+    if(btn.textContent !== '=') {
       num1 = display.textContent;
-      operator = opBtn.textContent;
+      operator = btn.textContent;
     }
-  } 
+  }
 }));
