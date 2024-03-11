@@ -2,7 +2,7 @@
 //do that mathematical operation on those 2 numbers
 
 //CALCULATOR FUNCTIONALITY
-const operations = {
+const calculate = {
   '+': (n1, n2) => n1 + n2,
   '-': (n1, n2) => n1 - n2,
   '*': (n1, n2) => n1 * n2,
@@ -10,9 +10,9 @@ const operations = {
 }
 
 //create variables for the 3 user inputs
-let num1;
-let operator;
-let num2; 
+let num1 = 0;
+let operator = '';
+let num2 = 0; 
 
 //takes 3 variables, 2 nums and an operation 
 //uses one of the above function based on the operation to perform the operation
@@ -21,22 +21,20 @@ function operate(n1, op, n2) {
   operator = op;
   num2 = Number(n2);
 
-  //looks through operations obj for the correct operator key, then performs the operation
-  return operations[operator](num1, num2);
+  //looks through calculate obj for the correct operator key, then performs the operation
+  return calculate[operator](num1, num2);
 }
 
 
 //CALCULATOR DISPLAY 
 const display = document.querySelector('.display');
 display.textContent = 0;
-
+const opBtns = document.querySelectorAll('.operation');
 const numbers = document.querySelectorAll('.number');
+const clear = document.querySelector('.clear');
 
 //EVENT LISTENERS
-
 //EVENT LISTENER HELPER FUNCTIONS
-const opBtns = document.querySelectorAll('.operation');
-
 //remove selected class from operation buttons
 function removeSelected() {
   //turn a node list into a proper array to iterate
@@ -71,7 +69,7 @@ numbers.forEach(num => num.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
   removeSelected();
 
-  if(e.key.match(/^\d/)) {
+  if(e.key.match(/^[\d]/)) {
     return display.textContent == 0 
     ? display.textContent = e.key 
     : display.textContent += e.key;
@@ -79,7 +77,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 //remove what's in display, all saved inputs, and any additional classes
-const clear = document.querySelector('.clear');
 clear.addEventListener('click', () => {
   display.textContent = 0;
   clearInputs();
@@ -96,19 +93,14 @@ document.addEventListener('keydown', (e) => {
 
 //add event listener to operator buttons, including =
 opBtns.forEach(btn => btn.addEventListener('click', () => {
-  //when a button is clicked, add selected class
+  //add selected class that helps with clearing display
   btn.classList.add('selected');
-
   //if operator is undefined, save what's in display to num1 and button's content to operator
   if(btn.textContent !== '=' && !operator) {
     num1 = display.textContent;
     operator = btn.textContent;
-    //if num1 and operator are defined, set num2 to what's in display
-    console.log(num1, operator, num2, 'n1, op, n2 => 1')
-
   } else {
     num2 = display.textContent;
-    console.log(num1, operator, num2, 'n1, op, n2 => 2')
     display.textContent = operate(num1, operator, num2);
     clearInputs();
 
@@ -119,3 +111,33 @@ opBtns.forEach(btn => btn.addEventListener('click', () => {
     }
   }
 }));
+
+//keyboard support for calculate
+document.addEventListener('keydown', (e) => {
+  //add selected class to help with clearing display
+  let opBtnsArr = [...opBtns];
+  for(let btn in opBtnsArr) {
+    if(e.key === opBtnsArr[btn].textContent || 
+      (e.key === 'Enter' && opBtnsArr[btn].textContent === '=')) {
+      opBtnsArr[btn].classList.add('selected');
+    }
+  }
+
+  let keys = Object.keys(calculate);
+  if(keys.includes(e.key) || e.key === '=' || e.key === 'Enter') {
+    if(!operator && keys.includes(e.key)) {
+      num1 = display.textContent;
+      operator = e.key;
+    } else {
+      num2 = display.textContent;
+      display.textContent = operate(num1, operator, num2);
+      
+      clearInputs();
+      //if e.key is not = or enter, save display to num1 and e.key to operator
+      if(keys.includes(e.key)) {
+        num1 = display.textContent;
+        operator = e.key;
+        }
+    }
+  }
+})
