@@ -57,7 +57,7 @@ function clearInputs() {
 numbers.forEach(num => num.addEventListener('click', () => {
   //call removeSelected first to make display 0 before moving to ternary
   removeSelected();
-  
+
   if(display.textContent.length < 9) {
     return display.textContent == 0 
     ? display.textContent = num.textContent 
@@ -131,7 +131,9 @@ function calculateHandler(symbol) {
     }
   } else {
     num2 = display.textContent;
-    display.textContent = operate(num1, operator, num2);
+    let content = operate(num1, operator, num2);
+    //limit the display to show only 9 digits including the decimal
+    display.textContent = content.toString().slice(0, 9);
     clearInputs();
 
     if(symbol !== '=') {
