@@ -117,9 +117,14 @@ document.addEventListener('keydown', (e) => {
 
 //click and keydown handler for operations
 function calculateHandler(symbol) {
-  if(symbol !== '=' && !operator) {
-    num1 = display.textContent;
-    operator = symbol;
+  if(!operator) {
+    if(symbol !== '=') {
+      num1 = display.textContent;
+      operator = symbol;
+    //if operator doesn't exist and symbol is an equal sign, clear user inputs
+    } else {
+      clearInputs();
+    }
   } else {
     num2 = display.textContent;
     display.textContent = operate(num1, operator, num2);
