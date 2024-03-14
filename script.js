@@ -57,19 +57,23 @@ function clearInputs() {
 numbers.forEach(num => num.addEventListener('click', () => {
   //call removeSelected first to make display 0 before moving to ternary
   removeSelected();
-
-  return display.textContent == 0 
-  ? display.textContent = num.textContent 
-  : display.textContent += num.textContent;
+  
+  if(display.textContent.length < 9) {
+    return display.textContent == 0 
+    ? display.textContent = num.textContent 
+    : display.textContent += num.textContent;
+  }
 }));
 
 document.addEventListener('keydown', (e) => {
   removeSelected();
 
   if(e.key.match(/^[\d]/)) {
-    return display.textContent == 0 
-    ? display.textContent = e.key 
-    : display.textContent += e.key;
+    if(display.textContent.length < 9) {
+      return display.textContent == 0 
+      ? display.textContent = e.key 
+      : display.textContent += e.key;
+    }
   }
 });
 
