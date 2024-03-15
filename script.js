@@ -23,10 +23,10 @@ function operate(n1, op, n2) {
 
 //CALCULATOR DISPLAY 
 const display = document.querySelector('.display');
-display.textContent = 0;
 const opBtns = document.querySelectorAll('.operation');
 const numbers = document.querySelectorAll('.number');
 const clear = document.querySelector('.clear');
+const dot = document.querySelector('.dot');
 
 //EVENT LISTENERS
 
@@ -46,6 +46,7 @@ function removeSelected() {
 
 //clear user inputs
 function clearInputs() {
+  dot.disabled = false;
   num1 = 0;
   operator = '';
   num2 = 0;
@@ -59,23 +60,39 @@ numbers.forEach(num => num.addEventListener('click', () => {
   removeSelected();
 
   if(display.textContent.length < 9) {
-    return display.textContent == 0 
-    ? display.textContent = num.textContent 
-    : display.textContent += num.textContent;
+    if(display.textContent == 0) {
+      display.textContent = num.textContent;
+    } else {
+      display.textContent += num.textContent;
+    }
   }
 }));
 
 document.addEventListener('keydown', (e) => {
-  removeSelected();
-
   if(e.key.match(/^[\d]/)) {
+    removeSelected();
+
     if(display.textContent.length < 9) {
-      return display.textContent == 0 
-      ? display.textContent = e.key 
-      : display.textContent += e.key;
+      if(display.textContent == 0) {
+        display.textContent = e.key;
+      } else {
+        display.textContent += e.key;
+      }
     }
   }
 });
+
+dot.addEventListener('click', () => dotHandler());
+document.addEventListener('keydown', (e) => {
+  if(e.key === '.' && !dot.disabled) {
+    dotHandler();
+  }
+});
+
+function dotHandler() {
+  dot.disabled = true;
+  display.textContent += '.';
+}
 
 //remove what's in display, all saved inputs, and any additional classes
 clear.addEventListener('click', () => {
@@ -125,13 +142,11 @@ function calculateHandler(symbol) {
     if(symbol !== '=') {
       num1 = display.textContent;
       operator = symbol;
-    //if operator doesn't exist and symbol is an equal sign, clear user inputs
-    } else {
-      clearInputs();
-    }
+    } 
   } else {
     num2 = display.textContent;
     let content = operate(num1, operator, num2);
+
     //limit the display to show only 9 digits including the decimal
     display.textContent = content.toString().slice(0, 9);
     clearInputs();
