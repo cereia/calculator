@@ -168,7 +168,7 @@ function calculateHandler(symbol) {
     let content = operate(num1, operator, num2);
 
     //limit the display to show only 9 digits including the decimal
-    display.textContent = roundTo9(content);
+    display.textContent = content > 999999999 ? 'NA' : roundTo9(content);
     clearInputs();
 
     if(symbol !== '=') {
