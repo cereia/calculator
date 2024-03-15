@@ -27,6 +27,7 @@ const opBtns = document.querySelectorAll('.operation');
 const numbers = document.querySelectorAll('.number');
 const clear = document.querySelector('.clear');
 const dot = document.querySelector('.dot');
+const back = document.querySelector('.back');
 
 //EVENT LISTENERS
 
@@ -102,12 +103,31 @@ clear.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if(e.key == 'Backspace' || e.key == 'Delete') {
+  if(e.key == 'Delete') {
     display.textContent = 0;
     clearInputs();
     removeSelected();
   };  
 });
+
+//remove one number at a time
+back.addEventListener('click', () => {
+  backHandler();
+})
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Backspace') {
+    backHandler();
+  }
+})
+
+function backHandler() {
+  if(display.textContent.length > 1) {
+    display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+  } else {
+    display.textContent = 0;
+  }
+}
 
 //click listener to operator buttons and =
 opBtns.forEach(btn => btn.addEventListener('click', (e) => {
