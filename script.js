@@ -168,7 +168,7 @@ function calculateHandler(symbol) {
     let content = operate(num1, operator, num2);
 
     //limit the display to show only 9 digits including the decimal
-    display.textContent = content.toString().slice(0, 9);
+    display.textContent = roundTo9(content);
     clearInputs();
 
     if(symbol !== '=') {
@@ -176,4 +176,12 @@ function calculateHandler(symbol) {
       operator = symbol;
     }
   }
+}
+
+//using the length of the num input, set the digits to 9 if there's no decimal or 8 with decimal
+function roundTo9 (num) {
+  let digits = Math.round(num).toString().length;
+  let max = num % 1 === 0 ? 9 : 8;
+  let power = digits <= max ? max - digits : 0;
+  return Math.round(num * (10 ** power)) / 10 ** power;
 }
