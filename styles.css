@@ -1,3 +1,14 @@
 body {
   background-color: cadetblue;
 }
+
+.operation {
+  background-color: orange;
+}
+
+.dvn.selected, 
+.mtp.selected, 
+.sub.selected, 
+.add.selected {
+  background-color: hsl(39, 100%, 50%, 70%);
+}
