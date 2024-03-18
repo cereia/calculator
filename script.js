@@ -60,12 +60,17 @@ function clearInputs() {
 sign.addEventListener('click', () => display.textContent = Number(display.textContent) * -1);
 
 //percent
-percent.addEventListener('click', () => {
+function makePercent() {
   if(display.textContent.length < 8) {
     display.textContent = roundTo9(Number(display.textContent) * 100 / 10000);
   }
-});
+}
 
+percent.addEventListener('click', () => makePercent());
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === '%') { makePercent(); }
+})
 
 //if display shows 0, clicking any number except 0 replaces 0 
 //if it's not 0, the clicked number gets added onto the end of what's already there
