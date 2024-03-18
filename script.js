@@ -56,10 +56,10 @@ function clearInputs() {
   return num1, operator, num2;
 }
 
-//sign 
+//sign button
 sign.addEventListener('click', () => display.textContent = Number(display.textContent) * -1);
 
-//percent
+//percent button and key
 function makePercent() {
   //divide number in display by 100 then round to 8 or 9 digits
   let percentage = roundTo9(Number(display.textContent) / 100);
@@ -78,44 +78,41 @@ document.addEventListener('keydown', (e) => {
 
 //if display shows 0, clicking any number except 0 replaces 0 
 //if it's not 0, the clicked number gets added onto the end of what's already there
+function addToDisplay(val) {
+  if(display.textContent.length < 9) {
+    if(display.textContent === '0') {
+      display.textContent = val;
+    } else {
+      display.textContent += val;
+    }
+  }
+}
+
 numbers.forEach(num => num.addEventListener('click', () => {
   //call removeSelected first to make display 0 before moving to ternary
   removeSelected();
-
-  if(display.textContent.length < 9) {
-    if(display.textContent === '0') {
-      display.textContent = num.textContent;
-    } else {
-      display.textContent += num.textContent;
-    }
-  }
+  addToDisplay(num.textContent);
 }));
 
 document.addEventListener('keydown', (e) => {
   if(e.key.match(/^[\d]/)) {
     removeSelected();
-
-    if(display.textContent.length < 9) {
-      if(display.textContent == 0) {
-        display.textContent = e.key;
-      } else {
-        display.textContent += e.key;
-      }
-    }
+    addToDisplay(e.key);
   }
 });
 
-dot.addEventListener('click', () => dotHandler());
-document.addEventListener('keydown', (e) => {
-  if(e.key === '.' && !dot.disabled) {
-    dotHandler();
-  }
-});
-
+//dot button and key
 function dotHandler() {
   dot.disabled = true;
   display.textContent += '.';
 }
+
+dot.addEventListener('click', () => dotHandler());
+document.addEventListener('keydown', (e) => {
+  if(e.key === '.' && dot.disabled === false) {
+    dotHandler();
+  }
+});
 
 //remove what's in display, all saved inputs, and any additional classes
 clear.addEventListener('click', () => {
@@ -157,6 +154,7 @@ opBtns.forEach(btn => btn.addEventListener('click', (e) => {
   btn.classList.add('selected');
   //pass button's symbol to handler
   calculateHandler(e.target.textContent);
+  dot.disabled = false;
 }));
 
 //keyboard listener for operations
@@ -172,8 +170,10 @@ document.addEventListener('keydown', (e) => {
 
   let keys = Object.keys(operations);
   if(keys.includes(e.key) || e.key === '=') {
+    dot.disabled = false;
     calculateHandler(e.key);
   } else if (e.key === 'Enter') {
+    dot.disabled = false;
     calculateHandler('=');
   }
 })

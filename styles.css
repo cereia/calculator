@@ -63,3 +63,7 @@ button {
 .extras {
   display: flex;
 }
+
+.dot:disabled {
+  background-color: hsl(0, 59%, 41%);
+}
