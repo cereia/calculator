@@ -28,6 +28,8 @@ const numbers = document.querySelectorAll('.number');
 const clear = document.querySelector('.clear');
 const dot = document.querySelector('.dot');
 const back = document.querySelector('.back');
+const percent = document.querySelector('.percent');
+const sign = document.querySelector('.sign');
 
 //EVENT LISTENERS
 
@@ -53,6 +55,11 @@ function clearInputs() {
   num2 = 0;
   return num1, operator, num2;
 }
+
+//sign 
+sign.addEventListener('click', () => display.textContent = Number(display.textContent) * -1)
+
+//percent 
 
 //if display shows 0, clicking any number except 0 replaces 0 
 //if it's not 0, the clicked number gets added onto the end of what's already there
