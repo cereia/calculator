@@ -57,9 +57,15 @@ function clearInputs() {
 }
 
 //sign 
-sign.addEventListener('click', () => display.textContent = Number(display.textContent) * -1)
+sign.addEventListener('click', () => display.textContent = Number(display.textContent) * -1);
 
-//percent 
+//percent
+percent.addEventListener('click', () => {
+  if(display.textContent.length < 8) {
+    display.textContent = roundTo9(Number(display.textContent) * 100 / 10000);
+  }
+});
+
 
 //if display shows 0, clicking any number except 0 replaces 0 
 //if it's not 0, the clicked number gets added onto the end of what's already there
@@ -68,7 +74,7 @@ numbers.forEach(num => num.addEventListener('click', () => {
   removeSelected();
 
   if(display.textContent.length < 9) {
-    if(display.textContent == 0) {
+    if(display.textContent === '0') {
       display.textContent = num.textContent;
     } else {
       display.textContent += num.textContent;
