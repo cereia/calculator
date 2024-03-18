@@ -61,8 +61,12 @@ sign.addEventListener('click', () => display.textContent = Number(display.textCo
 
 //percent
 function makePercent() {
-  if(display.textContent.length < 8) {
-    display.textContent = roundTo9(Number(display.textContent) * 100 / 10000);
+  //divide number in display by 100 then round to 8 or 9 digits
+  let percentage = roundTo9(Number(display.textContent) / 100);
+  //display percentage if percentage is not in scientific notation
+  //and is greater than the smallest possible value of this calculator
+  if(!percentage.toString().match(/[e]/i) && percentage >= 0.0000001) {
+    display.textContent = percentage;
   }
 }
 
